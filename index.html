@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reage Bio 睿捷生醫科技 — 次世代蛋白質血液檢測</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;600&display=swap');
+
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F0EDE6;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --text: #1A1A18;
+  --text-2: #5A5A56;
+  --text-3: #9A9A96;
+  --teal: #1D9E75;
+  --teal-light: #E1F5EE;
+  --teal-dark: #0A6B50;
+  --coral: #D85A30;
+  --coral-light: #FAECE7;
+  --amber: #BA7517;
+  --amber-light: #FAEEDA;
+  --purple: #6B4ECC;
+  --purple-light: #EEEDFE;
+  --blue: #2B6CB0;
+  --blue-light: #EBF4FF;
+  --red: #C53030;
+  --red-light: #FFF5F5;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* HEADER */
+.site-header {
+  background: var(--text);
+  color: #fff;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.logo-area { display: flex; align-items: baseline; gap: 12px; }
+.logo-main { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.01em; }
+.logo-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; }
+.header-stats { display: flex; gap: 1.5rem; }
+.hstat { text-align: right; }
+.hstat-num { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: #C8F5E4; }
+.hstat-label { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* LAYOUT */
+.main-wrap { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 80px); }
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.25rem 0;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+.sidebar-section { padding: 0 1rem 1rem; }
+.sidebar-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0.75rem 1rem 0.5rem;
+  display: block;
+}
+.search-wrap { padding: 0.5rem 1rem 0; }
+.search-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--teal); }
+.search-input::placeholder { color: var(--text-3); }
+
+.cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 1rem;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.12s;
+  border-left: 3px solid transparent;
+}
+.cat-item:hover { background: var(--bg); }
+.cat-item.active {
+  background: var(--teal-light);
+  border-left-color: var(--teal);
+}
+.cat-item-left { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 400; }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cat-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.cat-item.active .cat-count { background: rgba(29,158,117,0.15); color: var(--teal-dark); }
+
+/* CONTENT */
+.content { padding: 1.5rem 2rem; overflow-x: hidden; }
+
+.content-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.content-title { font-size: 18px; font-weight: 500; }
+.content-meta { font-size: 13px; color: var(--text-2); }
+
+/* SORT BAR */
+.sort-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sort-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+.sort-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--text-2);
+  transition: all 0.12s;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+.sort-btn:hover { background: var(--bg); }
+.sort-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+/* PROTEIN GRID */
+.protein-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.p-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.p-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--card-color, #ccc);
+  border-radius: 3px 0 0 3px;
+}
+.p-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.p-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.p-full {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.p-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.tag-aging { background: var(--purple-light); color: var(--purple); }
+.tag-high { background: var(--coral-light); color: var(--coral); }
+.tag-cardio { background: var(--red-light); color: var(--red); }
+.tag-neuro { background: var(--purple-light); color: var(--purple); }
+.tag-cancer { background: var(--amber-light); color: var(--amber); }
+.tag-immune { background: var(--blue-light); color: var(--blue); }
+.tag-mid { background: var(--surface2); color: var(--text-2); }
+
+/* DETAIL MODAL */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 14px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal-header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.modal-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.modal-full { font-size: 13px; color: var(--text-2); margin-bottom: 10px; }
+.modal-body { padding: 1.25rem 1.5rem; }
+.modal-section { margin-bottom: 1.25rem; }
+.modal-section-title {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.modal-section-content { font-size: 13px; line-height: 1.7; color: var(--text); }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-stat-box {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.modal-stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 3px; }
+.modal-stat-val { font-size: 13px; font-weight: 500; }
+.aging-bar-wrap { margin-top: 6px; }
+.aging-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.aging-bar-fill { height: 100%; border-radius: 3px; background: var(--teal); transition: width 0.4s; }
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  color: var(--text-2);
+  font-family: sans-serif;
+}
+.modal-close:hover { background: var(--bg); }
+
+.disease-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.disease-chip {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  font-weight: 400;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-3);
+}
+.empty-state-icon { font-size: 40px; margin-bottom: 1rem; }
+.empty-state-text { font-size: 15px; }
+
+/* FOOTER NOTE */
+.footer-note {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--teal-light);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--teal);
+  font-size: 12px;
+  color: var(--teal-dark);
+  line-height: 1.6;
+}
+
+/* COUNT BAR */
+.count-banner {
+  background: var(--text);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 12px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.count-banner span { color: #C8F5E4; font-family: 'DM Mono', monospace; font-size: 13px; }
+
+@media (max-width: 700px) {
+  .main-wrap { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .content { padding: 1rem; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .header-stats { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-area">
+    <div class="logo-main">Reage Bio</div>
+    <div class="logo-sub">睿捷生醫科技｜次世代蛋白質血液檢測</div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-num">1,034</div><div class="hstat-label">蛋白質</div></div>
+    <div class="hstat"><div class="hstat-num">4 µL</div><div class="hstat-label">血漿用量</div></div>
+    <div class="hstat"><div class="hstat-num">12+</div><div class="hstat-label">疾病領域</div></div>
+  </div>
+</header>
+
+<div class="main-wrap">
+  <nav class="sidebar">
+    <div class="search-wrap">
+      <input class="search-input" type="text" id="searchInput" placeholder="搜尋蛋白質 / 疾病 / 功能…">
+    </div>
+    <span class="sidebar-label">疾病領域</span>
+    <div id="catList"></div>
+    <span class="sidebar-label" style="margin-top:0.5rem;">臨床價值篩選</span>
+    <div class="sidebar-section">
+      <div class="cat-item" id="filter-aging" onclick="toggleFilter('aging')">
+        <div class="cat-item-left"><span class="cat-dot" style="background:#6B4ECC"></span>老化時鐘核心蛋白</div>
+      </div>
+      <div class="cat-item" id="filter-high" onclick="toggleFilter('high')">
+        <div class="cat-item-left"><span class="cat-dot" style="background:#D85A30"></span>高臨床研究引用</div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="content-header">
+      <div class="content-title" id="contentTitle">所有蛋白質</div>
+      <div class="content-meta" id="contentMeta"></div>
+    </div>
+
+    <div class="sort-bar">
+      <span class="sort-label">排序：</span>
+      <button class="sort-btn active" onclick="setSort('default')">預設</button>
+      <button class="sort-btn" onclick="setSort('alpha')">字母順序</button>
+      <button class="sort-btn" onclick="setSort('aging')">老化相關性</button>
+      <button class="sort-btn" onclick="setSort('clinical')">臨床價值</button>
+    </div>
+
+    <div class="count-banner" id="countBanner">
+      顯示 <span id="countNum">0</span> 個蛋白質 &nbsp;|&nbsp; 次世代蛋白質血液檢測完整版涵蓋 1,034 個蛋白質橫跨所有主要疾病領域
+    </div>
+
+    <div class="protein-grid" id="proteinGrid"></div>
+    <div class="footer-note" id="footerNote" style="display:none"></div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-header">
+      <div class="modal-name" id="mName"></div>
+      <div class="modal-full" id="mFull"></div>
+      <div class="p-tags" id="mTags"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-stat-box">
+          <div class="modal-stat-label">老化相關性</div>
+          <div class="modal-stat-val" id="mAgingLabel"></div>
+          <div class="aging-bar-wrap"><div class="aging-bar-bg"><div class="aging-bar-fill" id="mAgingBar"></div></div></div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-label">臨床研究強度</div>
+          <div class="modal-stat-val" id="mClinLabel"></div>
+        </div>
+      </div>
+      <div class="modal-section" style="margin-top:1rem">
+        <div class="modal-section-title">關聯疾病</div>
+        <div class="disease-chips" id="mDiseases"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">生物功能</div>
+        <div class="modal-section-content" id="mFunc"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">臨床應用意義</div>
+        <div class="modal-section-content" id="mClin"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">健檢加值說明</div>
+        <div class="modal-section-content" id="mValue"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+//  PROTEIN DATABASE  (representative selection)
+// =============================================
+const PROTEINS = [
+  // ── CARDIOVASCULAR ──
+  {name:'NT-proBNP',full:'N-Terminal Pro-B-Type Natriuretic Peptide',cat:'cardio',diseases:['心臟衰竭','心房顫動','左心室肥大','高血壓性心臟病'],func:'心室壓力與容積過載時由心肌細胞分泌，反映心臟機械性壓力。',clin:'早期偵測心功能下降，可預測未來心血管事件，優於傳統心電圖篩檢。',value:'提供受檢者「心臟壓力指數」，特別適合高血壓族群、中老年客群。',agingScore:4,clinScore:5},
+  {name:'hsTnI',full:'High-Sensitivity Troponin I',cat:'cardio',diseases:['急性心肌梗塞','亞臨床心肌損傷','心肌炎'],func:'心肌細胞結構蛋白，心肌損傷時釋放入血液。',clin:'偵測亞臨床（無症狀）心肌微損傷，遠早於傳統Troponin標準。',value:'高壓力工作族群常有慢性心肌微損傷而不自知，可作為警示指標。',agingScore:3,clinScore:5},
+  {name:'hsCRP',full:'High-Sensitivity C-Reactive Protein',cat:'cardio',diseases:['動脈硬化','急性冠心症','代謝症候群','全身性炎症'],func:'急性期蛋白，由肝臟在炎症刺激下合成，反映全身低度慢性發炎。',clin:'心血管風險預測獨立指標；低度慢性炎症是動脈硬化核心機轉。',value:'與血脂共同評估心血管風險，準確度大幅優於單獨使用膽固醇。',agingScore:4,clinScore:5},
+  {name:'Lp-PLA2',full:'Lipoprotein-Associated Phospholipase A2',cat:'cardio',diseases:['動脈硬化斑塊破裂','缺血性中風','冠心症'],func:'附著在LDL顆粒上的磷脂酶，在動脈粥狀硬化斑塊中高度活化。',clin:'直接反映血管壁炎症，預測斑塊穩定性，中風風險預測指標。',value:'補充傳統血脂檢查的盲點，評估「危險性」斑塊。',agingScore:3,clinScore:4},
+  {name:'PCSK9',full:'Proprotein Convertase Subtilisin/Kexin Type 9',cat:'cardio',diseases:['高膽固醇血症','動脈硬化','冠心症'],func:'調控LDL受體降解，PCSK9越高，LDL清除能力越低。',clin:'解釋為何部分患者血脂正常卻仍有高心血管風險；指導降脂治療策略。',value:'針對已服用降脂藥但效果不佳的客群，提供分子層面解釋。',agingScore:2,clinScore:4},
+  {name:'Fibrinogen',full:'Fibrinogen (Coagulation Factor I)',cat:'cardio',diseases:['血栓症','中風','心肌梗塞','深靜脈血栓'],func:'凝血系統核心蛋白，同時為急性期反應蛋白，反映炎症狀態。',clin:'高纖維蛋白原與心血管事件、中風顯著相關；也反映全身性炎症。',value:'高壓、久坐族群的血栓風險評估。',agingScore:3,clinScore:4},
+  {name:'MMP-3',full:'Matrix Metalloproteinase-3 (Stromelysin-1)',cat:'cardio',diseases:['動脈硬化斑塊不穩定','類風濕關節炎','心血管疾病'],func:'降解細胞外基質，在斑塊重塑與不穩定化中扮演關鍵角色。',clin:'預測動脈硬化斑塊破裂風險，也用於關節破壞評估。',value:'同時評估心血管與關節健康，適合中老年客群。',agingScore:3,clinScore:3},
+  {name:'Endothelin-1',full:'Endothelin-1',cat:'cardio',diseases:['肺動脈高壓','心臟衰竭','高血壓','腎血管疾病'],func:'最強效的血管收縮肽，由血管內皮細胞分泌。',clin:'血管功能障礙早期標記，肺動脈高壓診斷與預後評估。',value:'高血壓難控制族群的血管功能深度評估。',agingScore:3,clinScore:4},
+  {name:'VCAM-1',full:'Vascular Cell Adhesion Molecule-1',cat:'cardio',diseases:['動脈硬化','血管內皮炎症','冠心症'],func:'內皮細胞活化時上調，促進白血球黏附於血管壁。',clin:'血管內皮功能障礙早期標記，動脈硬化起始環節。',value:'反映血管「老化速率」，適合抗老健檢套組。',agingScore:4,clinScore:4},
+  {name:'ICAM-1',full:'Intercellular Adhesion Molecule-1',cat:'cardio',diseases:['內皮功能障礙','動脈硬化','自體免疫疾病'],func:'細胞黏附分子，調控免疫細胞遷移；在血管炎症中大量表現。',clin:'動脈硬化風險評估；自體免疫疾病活性指標。',value:'搭配VCAM-1評估血管炎症全貌。',agingScore:3,clinScore:3},
+
+  // ── AGING / BIOLOGICAL AGE CLOCK ──
+  {name:'GDF-15',full:'Growth Differentiation Factor 15',cat:'aging',diseases:['心血管疾病','腎臟疾病','癌症','肌少症'],func:'細胞應激與粒線體功能異常時分泌，被稱為「壓力荷爾蒙」。',clin:'全因死亡率最強預測指標之一；老化時鐘核心蛋白；反映整體生物老化程度。',value:'是最直觀的「生物年齡指標」，受檢者接受度高。',agingScore:5,clinScore:5},
+  {name:'Klotho',full:'α-Klotho',cat:'aging',diseases:['慢性腎臟病','心血管疾病','認知退化','骨質疏鬆'],func:'抗老化荷爾蒙，FGF23共受體；調控磷酸鹽代謝與細胞老化。',clin:'Klotho下降與加速老化、腎臟退化、認知退化高度相關；被稱為「長壽基因蛋白」。',value:'直接量化「長壽潛力」，是高端健檢最受關注的新興指標。',agingScore:5,clinScore:5},
+  {name:'TNFRSF1A',full:'TNF Receptor Superfamily Member 1A',cat:'aging',diseases:['慢性發炎','自體免疫疾病','心血管疾病'],func:'TNF炎症訊號的核心受體，其可溶形式反映全身性炎症負荷。',clin:'老化時鐘組成蛋白；inflammaging（老化性發炎）核心指標。',value:'量化「慢性低度發炎老化」，解釋為何某些人老得快。',agingScore:5,clinScore:4},
+  {name:'CXCL9',full:'C-X-C Motif Chemokine Ligand 9',cat:'aging',diseases:['慢性炎症','自體免疫','感染性疾病'],func:'IFN-γ誘導的趨化因子，招募T細胞；老化時鐘蛋白之一。',clin:'免疫老化（immunosenescence）標記，反映T細胞功能改變。',value:'評估免疫系統老化速率。',agingScore:4,clinScore:3},
+  {name:'Pleiotrophin',full:'Pleiotrophin (PTN)',cat:'aging',diseases:['神經退化','骨骼代謝','腫瘤'],func:'生長因子，促進神經突起生長與血管新生；老化時鐘蛋白。',clin:'老化相關神經可塑性評估；骨骼形成調控。',value:'Horvath老化時鐘組成蛋白，反映多器官老化狀態。',agingScore:5,clinScore:3},
+  {name:'MMP-1',full:'Matrix Metalloproteinase-1 (Collagenase-1)',cat:'aging',diseases:['皮膚老化','關節退化','動脈硬化'],func:'降解第一型膠原蛋白，在組織重塑中扮演關鍵角色。',clin:'皮膚老化、關節軟骨退化生物標記；老化時鐘蛋白。',value:'直觀連結「外表老化」與分子機制，受檢者容易理解。',agingScore:4,clinScore:3},
+  {name:'SERPINE1',full:'Plasminogen Activator Inhibitor-1 (PAI-1)',cat:'aging',diseases:['代謝症候群','血栓症','纖維化','衰老'],func:'抑制纖溶系統，促進血栓形成；與細胞衰老（senescence）密切相關。',clin:'代謝症候群與血管老化連結；細胞衰老標記。',value:'代謝老化評估，特別適合肥胖或代謝症候群族群。',agingScore:4,clinScore:4},
+  {name:'Beta-2 MG',full:'Beta-2 Microglobulin',cat:'aging',diseases:['腎臟退化','認知退化','老化相關神經損傷'],func:'HLA分子輕鏈，隨年齡上升；直接抑制神經幹細胞功能。',clin:'認知老化獨立風險因子；腎功能評估；神經老化標記。',value:'連結腎臟老化與大腦老化，是系統性老化的關鍵指標。',agingScore:5,clinScore:4},
+  {name:'TIMP-1',full:'Tissue Inhibitor of Metalloproteinase-1',cat:'aging',diseases:['肝纖維化','心臟纖維化','腫瘤'],func:'MMP抑制劑，調控組織重塑；促纖維化效應。',clin:'器官纖維化（肝、心、腎）早期標記；老化相關組織硬化評估。',value:'內臟器官纖維化評估，傳統影像學無法早期偵測。',agingScore:4,clinScore:4},
+
+  // ── NEURODEGENERATIVE ──
+  {name:'NfL',full:'Neurofilament Light Chain',cat:'neuro',diseases:['阿茲海默症','帕金森氏症','多發性硬化症','ALS','外傷性腦損傷'],func:'神經軸突結構蛋白，神經損傷時釋放入血液與腦脊液。',clin:'神經退化最靈敏的全血漿標記；症狀出現前10年即可偵測。',value:'認知健康高端篩檢的核心指標，滿足高知識族群的需求。',agingScore:5,clinScore:5},
+  {name:'GFAP',full:'Glial Fibrillary Acidic Protein',cat:'neuro',diseases:['阿茲海默症','腦損傷','星形膠質瘤','神經炎症'],func:'星形膠質細胞骨架蛋白，腦部損傷或神經炎症時釋放。',clin:'阿茲海默症早期血漿標記；腦損傷嚴重度評估；優於傳統神經影像。',value:'無輻射、非侵入性的腦健康評估，遠早於MRI可見異常。',agingScore:5,clinScore:5},
+  {name:'p-tau181',full:'Phosphorylated Tau Protein 181',cat:'neuro',diseases:['阿茲海默症','額顳葉失智症','tau病變'],func:'微管結合蛋白的磷酸化異常形式，形成神經纖維糾纏。',clin:'阿茲海默症最特異性血漿標記之一，可區別不同失智亞型。',value:'提供「失智風險DNA級別」的早期警示，10-15年前預測。',agingScore:5,clinScore:5},
+  {name:'Aβ42/40',full:'Amyloid Beta 42/40 Ratio',cat:'neuro',diseases:['阿茲海默症','輕度認知障礙'],func:'β-澱粉樣蛋白代謝產物比值；Aβ42下降反映大腦澱粉樣蛋白沉積。',clin:'阿茲海默症最早期可偵測生物標記之一；症狀前期（presymptomatic）診斷。',value:'搭配p-tau181形成「阿茲海默症風險雙標記」，預測力極強。',agingScore:5,clinScore:5},
+  {name:'SNAP-25',full:'Synaptosomal-Associated Protein 25',cat:'neuro',diseases:['阿茲海默症','突觸退化','認知退化'],func:'突觸前膜融合蛋白，突觸退化時釋放；神經傳遞功能指標。',clin:'突觸功能退化早期標記，補充NfL（軸突損傷）的盲點。',value:'從不同角度評估神經退化，提高預測準確性。',agingScore:4,clinScore:4},
+  {name:'VILIP-1',full:'Visinin-Like Protein 1',cat:'neuro',diseases:['阿茲海默症','創傷性腦損傷'],func:'神經元特異性鈣感應蛋白，神經損傷時大量釋放。',clin:'阿茲海默症腦脊液標記的血漿替代物；神經損傷程度評估。',value:'補充NfL與GFAP，提供更完整的神經退化風險圖。',agingScore:3,clinScore:3},
+  {name:'BDNF',full:'Brain-Derived Neurotrophic Factor',cat:'neuro',diseases:['憂鬱症','阿茲海默症','認知退化'],func:'促進神經存活、突觸可塑性與新神經元生成的關鍵生長因子。',clin:'BDNF降低與憂鬱症、認知退化高度相關；運動、飲食習慣影響顯著。',value:'連結「生活方式」與「大腦健康」，具高說服力的健康行為改變工具。',agingScore:4,clinScore:4},
+  {name:'NFL',full:'Neurofilament Light',cat:'neuro',diseases:['帕金森氏症','多系統萎縮','路易體失智症'],func:'軸突骨架蛋白，帕金森氏症相關神經退化標記。',clin:'帕金森氏症亞型鑑別；症狀前期帕金森氏症風險評估。',value:'與家族史結合，評估帕金森氏症風險。',agingScore:4,clinScore:4},
+
+  // ── METABOLIC / DIABETES ──
+  {name:'Insulin',full:'Insulin',cat:'metabolic',diseases:['第二型糖尿病','胰島素阻抗','代謝症候群','PCOS'],func:'胰臟β細胞分泌，調控葡萄糖攝取與利用；代謝核心荷爾蒙。',clin:'空腹胰島素量化胰島素阻抗（IR），早於HbA1c反映代謝異常。',value:'解釋「血糖正常但腰圍增加」的族群為何仍有糖尿病風險。',agingScore:3,clinScore:5},
+  {name:'C-Peptide',full:'C-Peptide',cat:'metabolic',diseases:['第一型糖尿病','第二型糖尿病','胰島素分泌功能評估'],func:'胰島素合成的副產物，反映內源性胰島素分泌能力。',clin:'區別胰島素分泌不足vs阻抗型糖尿病；胰臟β細胞功能評估。',value:'幫助醫師決定最佳降糖治療策略。',agingScore:2,clinScore:4},
+  {name:'Adiponectin',full:'Adiponectin',cat:'metabolic',diseases:['代謝症候群','第二型糖尿病','心血管疾病','非酒精性脂肪肝'],func:'脂肪組織分泌的抗炎激素，增進胰島素敏感性，保護血管。',clin:'Adiponectin下降是代謝症候群核心指標；肥胖者通常顯著偏低。',value:'評估「健康肥胖」vs「代謝性肥胖」的差異。',agingScore:4,clinScore:4},
+  {name:'Leptin',full:'Leptin',cat:'metabolic',diseases:['肥胖症','代謝症候群','PCOS','下丘腦功能障礙'],func:'脂肪細胞分泌的飽足感荷爾蒙；瘦素阻抗是肥胖惡性循環的根本。',clin:'Leptin/Adiponectin比值是代謝風險的強力預測指標。',value:'解釋為何某些人「怎麼吃都胖」，提供個人化飲食建議基礎。',agingScore:3,clinScore:4},
+  {name:'Resistin',full:'Resistin',cat:'metabolic',diseases:['胰島素阻抗','動脈硬化','炎症性疾病'],func:'脂肪細胞分泌的激素，拮抗胰島素作用，促進炎症。',clin:'連結肥胖、炎症與胰島素阻抗的分子橋梁。',value:'搭配Leptin、Adiponectin提供代謝健康完整圖像。',agingScore:3,clinScore:3},
+  {name:'FGF-21',full:'Fibroblast Growth Factor 21',cat:'metabolic',diseases:['非酒精性脂肪肝','第二型糖尿病','代謝症候群'],func:'肝臟分泌的代謝調節激素，反映脂質代謝壓力與肝臟代謝負荷。',clin:'非酒精性脂肪肝早期偵測；酒精性肝損傷標記；代謝壓力指數。',value:'在肝功能指數（GOT/GPT）升高前即可偵測代謝性肝病。',agingScore:3,clinScore:4},
+  {name:'RBP4',full:'Retinol-Binding Protein 4',cat:'metabolic',diseases:['胰島素阻抗','第二型糖尿病','腎臟疾病'],func:'維生素A運輸蛋白，脂肪組織分泌，抑制胰島素訊號。',clin:'胰島素阻抗早期標記，腎功能下降時升高。',value:'代謝-腎臟功能連結評估。',agingScore:2,clinScore:3},
+  {name:'IGFBP-1',full:'Insulin-like Growth Factor Binding Protein 1',cat:'metabolic',diseases:['胰島素阻抗','第二型糖尿病','代謝症候群'],func:'調控IGF-1生物利用度；空腹時升高，胰島素阻抗時降低。',clin:'空腹IGFBP-1是胰島素阻抗的靈敏早期標記。',value:'補充空腹血糖，提供更早期的代謝預警。',agingScore:3,clinScore:3},
+  {name:'Visfatin',full:'Visfatin (NAMPT/PBEF)',cat:'metabolic',diseases:['內臟型肥胖','第二型糖尿病','炎症性疾病'],func:'內臟脂肪分泌的炎症性脂肪因子，具類胰島素活性。',clin:'內臟脂肪堆積標記，獨立於BMI；反映中央型肥胖的代謝風險。',value:'解釋「體重正常但腹部肥胖」族群的代謝風險。',agingScore:3,clinScore:3},
+
+  // ── IMMUNE / INFLAMMATION ──
+  {name:'IL-6',full:'Interleukin-6',cat:'immune',diseases:['慢性發炎','類風濕關節炎','敗血症','COVID-19'],func:'多功能促炎症細胞激素，由多種細胞分泌，作用廣泛。',clin:'全身性慢性低度發炎評估；inflammaging核心指標；自體免疫活性。',value:'「發炎指數」直觀易懂，解釋慢性疲勞、關節痛、老化加速。',agingScore:5,clinScore:5},
+  {name:'IL-10',full:'Interleukin-10',cat:'immune',diseases:['自體免疫疾病','炎症性腸病','感染性疾病'],func:'抗炎症細胞激素，調節免疫反應，防止過度炎症。',clin:'IL-6/IL-10比值反映炎症調控能力；免疫平衡評估。',value:'搭配IL-6，評估免疫系統「攻守平衡」。',agingScore:3,clinScore:3},
+  {name:'IL-18',full:'Interleukin-18',cat:'immune',diseases:['炎症性腸病','動脈硬化','第二型糖尿病','心血管疾病'],func:'強力促炎症細胞激素，活化NK細胞與T細胞；驅動炎症瀑布。',clin:'心血管事件預測；炎症性腸病活性評估。',value:'慢性腸道炎症的系統性影響評估。',agingScore:4,clinScore:4},
+  {name:'TNF-α',full:'Tumor Necrosis Factor Alpha',cat:'immune',diseases:['類風濕關節炎','克羅恩病','敗血症','惡病質'],func:'核心促炎症細胞激素，調控細胞存活、分化與炎症反應。',clin:'自體免疫疾病活性指標；慢性炎症評估。',value:'自體免疫疾病客群的炎症控制監測。',agingScore:4,clinScore:4},
+  {name:'CXCL10',full:'C-X-C Motif Chemokine Ligand 10 (IP-10)',cat:'immune',diseases:['病毒感染','自體免疫疾病','肝炎','狼瘡'],func:'IFN-γ誘導趨化因子，招募活化T細胞至炎症部位。',clin:'病毒感染（COVID-19、慢性肝炎）嚴重度評估；自體免疫活性標記。',value:'免疫監控，特別適合慢性病毒感染或自體免疫風險族群。',agingScore:3,clinScore:4},
+  {name:'Complement C3',full:'Complement Component C3',cat:'immune',diseases:['狼瘡','類風濕關節炎','腎小球腎炎','代謝症候群'],func:'補體系統核心蛋白，連結先天與後天免疫；代謝症候群時升高。',clin:'補體活化狀態評估；自體免疫疾病診斷；代謝炎症連結。',value:'免疫功能全面評估，特別適合自體免疫風險族群。',agingScore:3,clinScore:3},
+  {name:'Complement C4',full:'Complement Component C4',cat:'immune',diseases:['狼瘡','補體缺陷症','復發性感染'],func:'補體傳統途徑成分；自體免疫病變與感染防禦中扮演角色。',clin:'搭配C3評估補體功能完整性；狼瘡診斷輔助。',value:'自體免疫疾病高風險族群的篩查。',agingScore:2,clinScore:3},
+  {name:'IgE',full:'Immunoglobulin E (Total)',cat:'immune',diseases:['過敏症','氣喘','寄生蟲感染','特應性皮炎'],func:'過敏反應主要媒介，與肥大細胞及嗜鹼性粒細胞結合引發過敏。',clin:'總IgE升高反映過敏體質；評估過敏負荷。',value:'過敏體質評估，可導入個人化過敏管理建議。',agingScore:2,clinScore:4},
+  {name:'sCD163',full:'Soluble CD163',cat:'immune',diseases:['非酒精性脂肪肝','炎症性疾病','血液惡性腫瘤'],func:'巨噬細胞活化標記，可溶形式反映M2巨噬細胞活化程度。',clin:'肝臟炎症與纖維化標記；巨噬細胞活化症候群評估。',value:'肝臟免疫炎症深度評估，補充GPT的盲點。',agingScore:3,clinScore:3},
+
+  // ── CANCER MARKERS ──
+  {name:'PSA',full:'Prostate-Specific Antigen',cat:'cancer',diseases:['攝護腺癌','攝護腺肥大','攝護腺炎'],func:'攝護腺特異性絲胺酸蛋白酶，正常攝護腺組織分泌。',clin:'攝護腺癌篩查；PSA升高需進一步鑑別良惡性。',value:'傳統健檢常見項目，次世代蛋白質檢測提供更精準的free/total PSA比值。',agingScore:2,clinScore:5},
+  {name:'CA125',full:'Cancer Antigen 125 (Mucin-16)',cat:'cancer',diseases:['卵巢癌','子宮內膜癌','腹膜炎'],func:'由漿膜腔上皮細胞表達的大型糖蛋白，卵巢癌常大量分泌。',clin:'卵巢癌篩查與追蹤；腹膜炎症評估。',value:'女性健檢套組核心指標；卵巢癌早期偵測。',agingScore:1,clinScore:5},
+  {name:'CEA',full:'Carcinoembryonic Antigen',cat:'cancer',diseases:['大腸癌','胃癌','肺癌','乳癌'],func:'胎兒期大量表現的醣蛋白，成人期由多種腫瘤再度表現。',clin:'消化道腫瘤追蹤；多種腺癌標記。',value:'消化道癌症高風險族群的篩查指標。',agingScore:1,clinScore:5},
+  {name:'AFP',full:'Alpha-Fetoprotein',cat:'cancer',diseases:['肝細胞癌','生殖細胞腫瘤','肝硬化'],func:'胎兒肝臟分泌的主要蛋白，成人肝細胞再生或惡化時升高。',clin:'肝細胞癌早期篩查；生殖細胞腫瘤標記。',value:'B型肝炎帶原者、肝硬化高風險族群的必要監測指標。',agingScore:2,clinScore:5},
+  {name:'CA19-9',full:'Cancer Antigen 19-9',cat:'cancer',diseases:['胰臟癌','膽管癌','大腸癌'],func:'Sialyl Lewisa 醣脂，由消化道腫瘤分泌。',clin:'胰臟癌早期篩查；膽道系統疾病評估。',value:'胰臟癌因症狀出現晚，早期血液標記篩查有重大意義。',agingScore:1,clinScore:5},
+  {name:'HER2',full:'Human Epidermal Growth Factor Receptor 2',cat:'cancer',diseases:['乳癌','胃癌','卵巢癌'],func:'表皮生長因子受體家族成員，過度表現促進腫瘤增殖。',clin:'乳癌亞型判斷；HER2過度表現者可使用靶向治療。',value:'乳癌高風險族群的精準風險分層。',agingScore:1,clinScore:4},
+  {name:'OPN',full:'Osteopontin',cat:'cancer',diseases:['多種腫瘤','骨轉移','腎臟疾病','骨質疏鬆'],func:'細胞外基質蛋白，調控細胞遷移、免疫調節與腫瘤轉移。',clin:'腫瘤轉移潛力標記；骨轉移評估；多種癌症的預後指標。',value:'腫瘤篩查補充標記，特別針對骨轉移風險評估。',agingScore:3,clinScore:3},
+  {name:'VEGF-A',full:'Vascular Endothelial Growth Factor A',cat:'cancer',diseases:['多種實體腫瘤','眼底新血管疾病','心血管疾病'],func:'促進血管新生的最重要生長因子；腫瘤生長依賴血管新生。',clin:'腫瘤血管新生指標；抗VEGF治療療效監測。',value:'腫瘤微環境評估；眼底疾病高風險族群篩查。',agingScore:2,clinScore:4},
+
+  // ── RENAL ──
+  {name:'Cystatin C',full:'Cystatin C',cat:'renal',diseases:['慢性腎臟病','急性腎損傷','心血管疾病'],func:'半胱胺酸蛋白酶抑制劑，由所有有核細胞穩定分泌，腎臟自由過濾。',clin:'腎絲球過濾率（eGFR）最準確的內源性標記，優於肌酸酐（不受肌肉量影響）。',value:'老年人、肌少症患者的腎功能更準確評估；早期CKD偵測。',agingScore:4,clinScore:5},
+  {name:'UMOD',full:'Uromodulin (Tamm-Horsfall Protein)',cat:'renal',diseases:['慢性腎臟病','腎小管損傷','尿路感染防護'],func:'腎亨氏彎升支粗段分泌的最大量尿液蛋白；腎小管功能保護蛋白。',clin:'UMOD下降是腎小管損傷標記；低UMOD預測CKD進展風險。',value:'腎臟「正向健康」指標（高UMOD=腎臟健康）。',agingScore:3,clinScore:4},
+  {name:'KIM-1',full:'Kidney Injury Molecule 1',cat:'renal',diseases:['急性腎損傷','腎小管損傷','腎纖維化','腎毒性藥物損傷'],func:'近端腎小管損傷時大量上調的跨膜蛋白；腎損傷早期警示指標。',clin:'急性腎損傷（AKI）最敏感早期標記；腎毒性藥物監測。',value:'服用NSAIDs、顯影劑、化療藥物族群的腎臟保護監測。',agingScore:3,clinScore:4},
+  {name:'NGAL',full:'Neutrophil Gelatinase-Associated Lipocalin',cat:'renal',diseases:['急性腎損傷','慢性腎臟病','尿路感染'],func:'急性腎損傷時快速上升的脂質運輸蛋白；傷後2小時即可偵測。',clin:'AKI最早期標記，比肌酸酐早24-48小時。',value:'手術後、對比劑使用後的即時腎臟監測。',agingScore:3,clinScore:4},
+  {name:'FGF-23',full:'Fibroblast Growth Factor 23',cat:'renal',diseases:['慢性腎臟病','磷酸鹽代謝障礙','左心室肥大'],func:'骨細胞分泌的磷酸鹽調節激素，腎功能下降時大量升高。',clin:'CKD早期心腎連結標記；磷酸鹽代謝失調評估。',value:'腎臟病心血管風險連結，提供腎臟科與心臟科跨科建議。',agingScore:4,clinScore:4},
+  {name:'Renin',full:'Renin',cat:'renal',diseases:['腎血管性高血壓','醛固酮增多症','腎動脈狹窄'],func:'腎小球旁細胞分泌的蛋白酶，啟動RAAS系統，調控血壓與水分平衡。',clin:'高血壓病因分類（原發vs腎性）；醛固酮/Renin比值評估。',value:'難治性高血壓或年輕高血壓族群的深度評估。',agingScore:2,clinScore:4},
+
+  // ── LIVER ──
+  {name:'ALT',full:'Alanine Aminotransferase',cat:'liver',diseases:['肝炎','非酒精性脂肪肝','肝細胞損傷','藥物性肝炎'],func:'主要存在於肝細胞的轉氨酶，肝細胞損傷時大量釋放。',clin:'肝細胞損傷標準標記；與蛋白質組學整合提供肝炎機轉解讀。',value:'傳統指標基礎上，加上FGF-21、GDF-15等深化肝臟代謝評估。',agingScore:2,clinScore:5},
+  {name:'ELF Score',full:'Enhanced Liver Fibrosis Score (HA+PIIINP+TIMP-1)',cat:'liver',diseases:['肝纖維化','肝硬化','非酒精性脂肪肝炎'],func:'透明質酸(HA)、III型膠原蛋白前肽(PIIINP)、TIMP-1組合評分。',clin:'肝纖維化非侵入性評估的最準確組合，可替代肝穿刺活檢。',value:'評估是否需要進行肝穿刺活檢，大幅減少不必要的侵入性檢查。',agingScore:3,clinScore:5},
+  {name:'M2BPGi',full:'Mac-2 Binding Protein Glycan Isomer',cat:'liver',diseases:['肝纖維化','肝硬化','肝細胞癌風險'],func:'肝星狀細胞活化時分泌的醣蛋白，反映肝纖維化程度。',clin:'肝纖維化程度最精準的血清標記之一；與肝癌風險相關。',value:'B/C型肝炎患者、長期飲酒者的肝纖維化動態監測。',agingScore:3,clinScore:4},
+  {name:'Hyaluronic acid',full:'Hyaluronic Acid (Hyaluronan)',cat:'liver',diseases:['肝纖維化','肝硬化','關節炎'],func:'細胞外基質主要成分，肝纖維化時由肝細胞降解能力下降導致升高。',clin:'肝纖維化程度評估；ELF Score核心組成成分之一。',value:'非侵入性評估肝臟健康狀態，取代部分肝穿刺需求。',agingScore:3,clinScore:4},
+
+  // ── BONE / JOINT ──
+  {name:'OPG',full:'Osteoprotegerin',cat:'bone',diseases:['骨質疏鬆症','動脈硬化鈣化','類風濕關節炎'],func:'破骨細胞分化抑制因子，保護骨骼不被過度吸收；同時抑制血管鈣化。',clin:'骨代謝調控評估；OPG/RANKL比值反映骨吸收與形成的平衡。',value:'骨質疏鬆早期風險評估，優於單純骨密度測定。',agingScore:4,clinScore:4},
+  {name:'RANKL',full:'Receptor Activator of NF-κB Ligand',cat:'bone',diseases:['骨質疏鬆症','類風濕關節炎','骨轉移癌症'],func:'促進破骨細胞分化與活化的關鍵配體；癌症骨轉移的驅動因子。',clin:'骨吸收活化程度評估；OPG/RANKL比值是骨代謝平衡指標。',value:'抗骨質疏鬆治療療效監測；癌症骨轉移高風險族群。',agingScore:4,clinScore:4},
+  {name:'CTX-I',full:'C-Terminal Telopeptide of Type I Collagen',cat:'bone',diseases:['骨質疏鬆症','Paget病','骨轉移'],func:'第一型膠原蛋白降解產物，反映骨吸收（破骨細胞活性）速率。',clin:'骨質流失速率即時監測；抗骨質疏鬆藥物療效評估。',value:'骨密度DXA的補充指標，動態反映骨骼代謝活性。',agingScore:4,clinScore:4},
+  {name:'P1NP',full:'Procollagen Type 1 N-Terminal Propeptide',cat:'bone',diseases:['骨質疏鬆症','骨軟化症','腫瘤骨病變'],func:'第一型前膠原蛋白胺基末端前肽，反映骨形成（成骨細胞活性）速率。',clin:'骨形成活性評估；骨質疏鬆治療的首選監測指標。',value:'搭配CTX-I，完整評估骨骼「拆建比率」。',agingScore:3,clinScore:4},
+  {name:'Sclerostin',full:'Sclerostin (SOST)',cat:'bone',diseases:['骨質疏鬆症','骨硬化症','心血管鈣化'],func:'骨細胞分泌的Wnt訊號抑制劑，抑制骨形成；與血管鈣化相關。',clin:'骨形成潛力評估；抗骨硬化素抗體治療靶點。',value:'新一代骨代謝評估指標，老年骨質疏鬆深度評估。',agingScore:4,clinScore:3},
+  {name:'MMP-13',full:'Matrix Metalloproteinase-13 (Collagenase-3)',cat:'bone',diseases:['骨關節炎','軟骨退化','類風濕關節炎'],func:'降解關節軟骨主要膠原蛋白（II型），骨關節炎軟骨破壞核心酶。',clin:'關節軟骨退化嚴重度標記；骨關節炎進展預測。',value:'關節退化的早期分子標記，早於X光可見變化。',agingScore:4,clinScore:3},
+
+  // ── HORMONAL / ENDOCRINE ──
+  {name:'IGF-1',full:'Insulin-like Growth Factor 1',cat:'hormonal',diseases:['生長荷爾蒙缺乏','肢端肥大症','代謝症候群','癌症風險'],func:'生長激素主要下游效應分子，促進細胞增殖、修復與蛋白質合成。',clin:'IGF-1降低反映生長激素軸功能退化；與老化速率高度相關。',value:'「細胞修復能力」指標，是抗老健檢的核心評估項目。',agingScore:5,clinScore:5},
+  {name:'SHBG',full:'Sex Hormone-Binding Globulin',cat:'hormonal',diseases:['代謝症候群','第二型糖尿病','多囊卵巢症','性功能障礙'],func:'性荷爾蒙運輸蛋白，決定游離睪固酮與雌激素的生物利用度。',clin:'低SHBG與胰島素阻抗、代謝症候群高度相關；游離睪固酮計算基礎。',value:'男性睪固酮相對不足的深度評估（低睪酮症篩查）。',agingScore:3,clinScore:4},
+  {name:'DHEA-S',full:'Dehydroepiandrosterone Sulfate',cat:'hormonal',diseases:['老化相關疾病','腎上腺功能不足','心血管疾病'],func:'腎上腺分泌的類固醇激素前驅物，隨年齡顯著下降。',clin:'荷爾蒙老化指標；腎上腺功能評估；反映整體荷爾蒙分泌能力。',value:'「荷爾蒙年齡」的重要組成，適合抗老健檢套組。',agingScore:5,clinScore:4},
+  {name:'Cortisol',full:'Cortisol',cat:'hormonal',diseases:['慢性壓力反應','庫欣症候群','腎上腺功能不足','代謝症候群'],func:'腎上腺皮質分泌的主要壓力荷爾蒙，調控代謝、免疫與心血管功能。',clin:'HPA軸功能評估；慢性壓力量化；早晨皮質醇節律評估。',value:'壓力族群的「壓力荷爾蒙量化」，具高市場說服力。',agingScore:4,clinScore:4},
+  {name:'Adipsin',full:'Adipsin (Complement Factor D)',cat:'hormonal',diseases:['代謝症候群','胰島素阻抗','第二型糖尿病'],func:'脂肪組織分泌的補體因子，調控脂肪細胞脂解與胰島素分泌。',clin:'脂肪組織功能評估；代謝症候群早期標記。',value:'搭配Adiponectin、Leptin，提供脂肪組織功能完整圖像。',agingScore:3,clinScore:3},
+
+  // ── PULMONARY ──
+  {name:'SP-D',full:'Surfactant Protein D',cat:'pulm',diseases:['COPD','肺氣腫','間質性肺病','COVID-19肺部損傷'],func:'肺泡Ⅱ型上皮細胞分泌的集合素，調控表面活性物質、先天免疫。',clin:'肺部發炎與損傷早期標記；COPD嚴重度評估。',value:'吸菸者、空汙高暴露族群的肺部健康監測。',agingScore:3,clinScore:4},
+  {name:'CC-16',full:'Club Cell Secretory Protein 16 (CC16/CCSP)',cat:'pulm',diseases:['COPD','氣喘','職業性肺損傷','空氣污染相關肺病'],func:'氣道Club細胞（Clara細胞）分泌的保護性蛋白；下降反映氣道上皮損傷。',clin:'氣道上皮損傷靈敏標記，比SP-D更早期偵測損傷。',value:'空汙、吸菸相關的隱性氣道損傷評估。',agingScore:3,clinScore:3},
+  {name:'KL-6',full:'Krebs von den Lungen-6 (MUC5B)',cat:'pulm',diseases:['間質性肺病','肺纖維化','COVID-19','放射性肺炎'],func:'肺泡II型細胞高分子黏蛋白，肺纖維化與肺泡損傷時大量釋放。',clin:'間質性肺病最特異性標記；肺纖維化程度評估。',value:'長COVID後遺症、特發性肺纖維化高風險族群的監測。',agingScore:3,clinScore:4},
+
+  // ── REPRODUCTIVE / WOMEN'S HEALTH ──
+  {name:'AMH',full:'Anti-Müllerian Hormone',cat:'hormonal',diseases:['卵巢儲備功能下降','多囊卵巢症候群','不孕症','更年期評估'],func:'卵巢顆粒細胞分泌，反映卵巢儲備功能（卵泡數量）。',clin:'卵巢年齡評估；PCOS診斷；輔助生殖評估；更年期時間預測。',value:'女性「生育時鐘」評估，35歲以下女性族群的重要健檢指標。',agingScore:4,clinScore:5},
+  {name:'Inhibin B',full:'Inhibin B',cat:'hormonal',diseases:['卵巢儲備功能下降','垂體促性腺激素功能評估','男性生育問題'],func:'由卵巢顆粒細胞與睪丸塞托利細胞分泌，抑制FSH分泌。',clin:'女性卵巢儲備功能（搭配AMH）；男性精子生成功能評估。',value:'男女性生育功能完整評估。',agingScore:3,clinScore:4},
+  {name:'Progesterone',full:'Progesterone',cat:'hormonal',diseases:['月經週期異常','不孕症','更年期','子宮內膜異位症'],func:'黃體素，維持妊娠與調控月經週期的關鍵女性激素。',clin:'排卵確認；黃體功能評估；更年期激素評估。',value:'女性荷爾蒙平衡評估，功能醫學健檢核心項目。',agingScore:3,clinScore:4},
+
+  // ── THYROID ──
+  {name:'TSH',full:'Thyroid-Stimulating Hormone',cat:'hormonal',diseases:['甲狀腺功能低下','甲狀腺功能亢進','亞臨床甲狀腺疾病'],func:'腦垂體分泌，調控甲狀腺素合成；甲狀腺功能的最靈敏標記。',clin:'甲狀腺功能篩查；亞臨床甲狀腺疾病偵測（症狀前期）。',value:'傳統健檢已有，次世代蛋白質檢測可同時評估甲狀腺炎症指標（TPOAb）。',agingScore:3,clinScore:5},
+  {name:'Anti-TPO',full:'Anti-Thyroid Peroxidase Antibody',cat:'immune',diseases:['橋本氏甲狀腺炎','格雷夫氏病','甲狀腺功能低下'],func:'針對甲狀腺過氧化酶的自體抗體，破壞甲狀腺組織。',clin:'甲狀腺自體免疫疾病早期診斷；橋本氏甲狀腺炎標記。',value:'解釋無法解釋的疲倦、體重增加、認知模糊。',agingScore:3,clinScore:5},
+
+  // ── STRESS / MENTAL HEALTH ──
+  {name:'Prolactin',full:'Prolactin',cat:'hormonal',diseases:['高泌乳素血症','壓力反應','下丘腦疾病'],func:'腦垂體前葉分泌，受壓力與多巴胺調控；高泌乳素與性功能相關。',clin:'壓力荷爾蒙軸評估；高泌乳素血症診斷。',value:'職業壓力族群的荷爾蒙壓力評估。',agingScore:2,clinScore:3},
+  {name:'S100B',full:'S100 Calcium Binding Protein B',cat:'neuro',diseases:['腦損傷','阿茲海默症','憂鬱症','神經炎症'],func:'星形膠質細胞與雪旺細胞分泌的鈣結合蛋白；腦損傷急性標記。',clin:'腦損傷嚴重度評估；神經炎症程度評估；憂鬱症相關研究標記。',value:'輕度腦震盪、運動傷害的神經損傷評估。',agingScore:3,clinScore:3},
+  {name:'NPY',full:'Neuropeptide Y',cat:'neuro',diseases:['焦慮症','肥胖症','心血管疾病','壓力相關疾病'],func:'廣泛表現於大腦與交感神經系統；調控食慾、情緒與壓力反應。',clin:'慢性壓力與自律神經功能評估；肥胖的神經內分泌機轉。',value:'壓力-肥胖連結的分子解釋，具高說服力。',agingScore:3,clinScore:3},
+];
+
+// Categories config
+const CATEGORIES = [
+  {id:'all',label:'全部蛋白質',color:'#888',dot:'#888'},
+  {id:'cardio',label:'心血管',color:'#C53030',dot:'#C53030'},
+  {id:'aging',label:'老化時鐘',color:'#6B4ECC',dot:'#6B4ECC'},
+  {id:'neuro',label:'神經退化',color:'#553C9A',dot:'#553C9A'},
+  {id:'metabolic',label:'代謝 / 糖尿病',color:'#744210',dot:'#D97706'},
+  {id:'immune',label:'免疫 / 發炎',color:'#1E40AF',dot:'#3B82F6'},
+  {id:'cancer',label:'腫瘤標記',color:'#92400E',dot:'#F59E0B'},
+  {id:'renal',label:'腎臟功能',color:'#065F46',dot:'#10B981'},
+  {id:'liver',label:'肝臟功能',color:'#78350F',dot:'#B45309'},
+  {id:'bone',label:'骨骼 / 關節',color:'#1E3A5F',dot:'#60A5FA'},
+  {id:'hormonal',label:'荷爾蒙 / 內分泌',color:'#7C2D8E',dot:'#C084FC'},
+  {id:'pulm',label:'肺部 / 呼吸',color:'#0C4A6E',dot:'#38BDF8'},
+];
+
+const CAT_COLORS = {};
+CATEGORIES.forEach(c => { CAT_COLORS[c.id] = c.dot; });
+
+let activeCat = 'all';
+let activeFilter = null;
+let activeSort = 'default';
+let searchQuery = '';
+
+function init() {
+  renderCatList();
+  renderProteins();
+  document.getElementById('searchInput').addEventListener('input', e => {
+    searchQuery = e.target.value.toLowerCase();
+    activeCat = 'all';
+    activeFilter = null;
+    renderCatList();
+    renderProteins();
+  });
+}
+
+function renderCatList() {
+  const counts = {};
+  PROTEINS.forEach(p => {
+    counts[p.cat] = (counts[p.cat] || 0) + 1;
+    counts['all'] = (counts['all'] || 0) + 1;
+  });
+  const html = CATEGORIES.map(c => `
+    <div class="cat-item ${activeCat === c.id && !activeFilter ? 'active' : ''}" onclick="setCat('${c.id}')">
+      <div class="cat-item-left">
+        <span class="cat-dot" style="background:${c.dot}"></span>
+        ${c.label}
+      </div>
+      <span class="cat-count">${counts[c.id] || 0}</span>
+    </div>
+  `).join('');
+  document.getElementById('catList').innerHTML = html;
+
+  ['aging','high'].forEach(f => {
+    const el = document.getElementById('filter-'+f);
+    if (el) el.className = 'cat-item' + (activeFilter === f ? ' active' : '');
+  });
+}
+
+function setCat(id) {
+  activeCat = id;
+  activeFilter = null;
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  renderCatList();
+  renderProteins();
+}
+
+function toggleFilter(f) {
+  activeFilter = activeFilter === f ? null : f;
+  activeCat = 'all';
+  renderCatList();
+  renderProteins();
+}
+
+function setSort(s) {
+  activeSort = s;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderProteins();
+}
+
+function getFiltered() {
+  let list = [...PROTEINS];
+  if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
+  if (activeFilter === 'aging') list = list.filter(p => p.agingScore >= 4);
+  if (activeFilter === 'high') list = list.filter(p => p.clinScore >= 4);
+  if (searchQuery) list = list.filter(p =>
+    p.name.toLowerCase().includes(searchQuery) ||
+    p.full.toLowerCase().includes(searchQuery) ||
+    p.diseases.some(d => d.includes(searchQuery)) ||
+    p.func.includes(searchQuery) ||
+    p.clin.includes(searchQuery)
+  );
+  return list;
+}
+
+function sortList(list) {
+  if (activeSort === 'alpha') return list.slice().sort((a,b) => a.name.localeCompare(b.name));
+  if (activeSort === 'aging') return list.slice().sort((a,b) => b.agingScore - a.agingScore);
+  if (activeSort === 'clinical') return list.slice().sort((a,b) => b.clinScore - a.clinScore);
+  return list;
+}
+
+function renderProteins() {
+  const filtered = getFiltered();
+  const sorted = sortList(filtered);
+  const catObj = CATEGORIES.find(c => c.id === activeCat) || CATEGORIES[0];
+  let title = catObj.label;
+  if (activeFilter === 'aging') title = '老化時鐘核心蛋白';
+  if (activeFilter === 'high') title = '高臨床研究引用蛋白';
+  if (searchQuery) title = `搜尋「${searchQuery}」`;
+
+  document.getElementById('contentTitle').textContent = title;
+  document.getElementById('contentMeta').textContent = '';
+  document.getElementById('countNum').textContent = sorted.length;
+
+  if (sorted.length === 0) {
+    document.getElementById('proteinGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><div class="empty-state-text">找不到符合條件的蛋白質</div></div>`;
+    document.getElementById('footerNote').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('proteinGrid').innerHTML = sorted.map(p => {
+    const color = CAT_COLORS[p.cat] || '#888';
+    const tags = [];
+    if (p.agingScore >= 5) tags.push('<span class="tag tag-aging">老化時鐘</span>');
+    if (p.clinScore >= 5) tags.push('<span class="tag tag-high">高研究強度</span>');
+    if (p.cat === 'cardio') tags.push('<span class="tag tag-cardio">心血管</span>');
+    if (p.cat === 'neuro') tags.push('<span class="tag tag-neuro">神經退化</span>');
+    if (p.cat === 'cancer') tags.push('<span class="tag tag-cancer">腫瘤</span>');
+    if (p.cat === 'immune') tags.push('<span class="tag tag-immune">免疫</span>');
+    return `<div class="p-card" style="--card-color:${color}" onclick="showDetail('${p.name.replace(/'/g,"\\'")}')">
+      <div class="p-name">${p.name}</div>
+      <div class="p-full">${p.full}</div>
+      <div class="p-tags">${tags.slice(0,2).join('')}</div>
+    </div>`;
+  }).join('');
+
+  const note = document.getElementById('footerNote');
+  if (activeCat === 'all' && !searchQuery && !activeFilter) {
+    note.style.display = 'block';
+    note.textContent = `以上為精選代表性蛋白質，涵蓋 12 大疾病領域。次世代蛋白質血液檢測完整版實際量測 1,034 種蛋白質，本資料庫持續更新中。Reage Bio 睿捷生醫科技提供中文臨床解讀報告，協助您的診所將蛋白質組學數據轉化為客戶可理解的健康洞察。`;
+  } else {
+    note.style.display = 'none';
+  }
+}
+
+const AGING_LABELS = ['','極低','低','中度','高度','極高'];
+const CLIN_LABELS = ['','初步研究','觀察研究','佐證研究','強力佐證','黃金標準'];
+
+function showDetail(name) {
+  const p = PROTEINS.find(x => x.name === name);
+  if (!p) return;
+  document.getElementById('mName').textContent = p.name;
+  document.getElementById('mFull').textContent = p.full;
+  const tags = [];
+  const catObj = CATEGORIES.find(c => c.id === p.cat);
+  if (catObj) tags.push(`<span class="tag tag-mid">${catObj.label}</span>`);
+  if (p.agingScore >= 5) tags.push('<span class="tag tag-aging">老化時鐘核心</span>');
+  if (p.clinScore >= 5) tags.push('<span class="tag tag-high">★ 黃金標準</span>');
+  document.getElementById('mTags').innerHTML = tags.join('');
+  document.getElementById('mAgingLabel').textContent = AGING_LABELS[p.agingScore] || '-';
+  document.getElementById('mAgingBar').style.width = (p.agingScore / 5 * 100) + '%';
+  document.getElementById('mClinLabel').textContent = CLIN_LABELS[p.clinScore] || '-';
+  document.getElementById('mDiseases').innerHTML = p.diseases.map(d => `<span class="disease-chip">${d}</span>`).join('');
+  document.getElementById('mFunc').textContent = p.func;
+  document.getElementById('mClin').textContent = p.clin;
+  document.getElementById('mValue').textContent = p.value;
+  document.getElementById('modalBackdrop').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+init();
+</script>
+</body>
+</html>
